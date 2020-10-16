@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { useHistory } from 'react-router-dom'
-import axiosWithAuth from '../utils/axiosWithAuth'
+import {axiosWithAuth} from '../utils/axiosWithAuth'
 
 const Login = (props) => {
     const [login, setLogin] = useState({
@@ -13,17 +13,20 @@ const Login = (props) => {
         setLogin({...login, [event.target.name]: event.target.value})
     }
 
+    // console.log("login state:", login)
+
     const loginPlease = (event) => {
         event.preventDefault()
         // /post/api/login
-        console.log(login)
+        // console.log("loginPLease: ", login)
         axiosWithAuth()
-            .post('/api/login', login)
+            .post('/login', login)
             .then((response) => {
                 window.localStorage.setItem('token', response.data.payload);
+                history.push('/colors')
                 })
             .catch(err => console.log(err))
-            .finally(history.push('/colors'))
+            .finally()
         // push to Friends List
         
     }

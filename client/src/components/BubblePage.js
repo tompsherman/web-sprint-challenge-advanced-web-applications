@@ -3,24 +3,27 @@ import axios from "axios";
 
 import Bubbles from "./Bubbles";
 import ColorList from "./ColorList";
-import axiosWithAuth from "../utils/axiosWithAuth";
+import {axiosWithAuth} from "../utils/axiosWithAuth";
 
-const BubblePage = () => {
+const BubblePage = ({editing}) => {
   const [colorList, setColorList] = useState([]);
+  const [effectTrigger, setEffectTrigger] = useState(false)
   // fetch your colors data from the server when the component mounts
   // set that data to the colorList state property
   useEffect(()=> {
     axiosWithAuth()
-    .get('/api/colors')
+    .get('/colors')
     .then((response) => {
-      setColorList(response.data)})
+      setColorList(response.data)
+      setEffectTrigger(true)
+      })
     .catch((error)=> {
       console.log(error)})
-  })
+  }, [effectTrigger])
 
   return (
     <>
-      <ColorList colors={colorList} updateColors={setColorList} />
+      <ColorList colors={colorList} updateColors={setColorList} setEffectTrigger={setEffectTrigger} effectTrigger={effectTrigger} />
       <Bubbles colors={colorList} />
     </>
   );
