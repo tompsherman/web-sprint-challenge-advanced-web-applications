@@ -16,13 +16,14 @@ const Login = (props) => {
     const loginPlease = (event) => {
         event.preventDefault()
         // /post/api/login
+        console.log(login)
         axiosWithAuth()
             .post('/api/login', login)
             .then((response) => {
                 window.localStorage.setItem('token', response.data.payload);
-                history.push('/colors')})
+                })
             .catch(err => console.log(err))
-            .finally()
+            .finally(history.push('/colors'))
         // push to Friends List
         
     }
@@ -34,18 +35,18 @@ const Login = (props) => {
                 <input 
                     name="username" 
                     type="text" 
-                    value={login.username} // change to actual {target.value}
+                    value={login.username} 
                     onChange={changeHandler} 
                     placeholder="enter username" 
                 />
                 <input 
                     name="password" 
                     type="password" 
-                    value={login.password} // change to actual {target.value}
+                    value={login.password} 
                     onChange={changeHandler} 
                     placeholder="enter password" 
                 />
-                <button>log in</button>
+                <button onClick={loginPlease}>log in</button>
             </form>
         </div>
     )
