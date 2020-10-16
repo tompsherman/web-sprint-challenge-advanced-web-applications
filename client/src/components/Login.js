@@ -1,14 +1,54 @@
-import React from "react";
+import React, {useState} from 'react'
+import { useHistory } from 'react-router-dom'
+import axiosWithAuth from '../utils/axiosWithAuth'
 
-const Login = () => {
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
-  return (
-    <>
-      <h1>Welcome to the Bubble App!</h1>
-      <p>Build a login page here</p>
-    </>
-  );
-};
+const Login = (props) => {
+    const [login, setLogin] = useState({
+        username: "",
+        password: ""
+    })
+    const history = useHistory()
 
-export default Login;
+    const changeHandler = (event) => {
+        setLogin({...login, [event.target.name]: event.target.value})
+    }
+
+    const loginPlease = (event) => {
+        event.preventDefault()
+        // /post/api/login
+        axiosWithAuth()
+            .post('/api/login', login)
+            .then((response) => {
+                window.localStorage.setItem('token', response.data.payload);
+                history.push('/colors')})
+            .catch(err => console.log(err))
+            .finally()
+        // push to Friends List
+        
+    }
+    return (
+        <div>
+          <h1>Welcome to the Bubble App!</h1>
+            <h1>Please Log In:</h1>
+            <form onSubmit={loginPlease}>
+                <input 
+                    name="username" 
+                    type="text" 
+                    value={login.username} // change to actual {target.value}
+                    onChange={changeHandler} 
+                    placeholder="enter username" 
+                />
+                <input 
+                    name="password" 
+                    type="password" 
+                    value={login.password} // change to actual {target.value}
+                    onChange={changeHandler} 
+                    placeholder="enter password" 
+                />
+                <button>log in</button>
+            </form>
+        </div>
+    )
+}
+
+export default Login
