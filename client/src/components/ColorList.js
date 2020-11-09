@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from 'axios'
+import {axiosWithAuth} from "../utils/axiosWithAuth";
 
 const initialColor = {
   color: "",
   code: { hex: "" }
 };
 
-const ColorList = ({ colors, updateColors }) => {
+const ColorList = ({ colors, updateColors, setEffectTrigger, effectTrigger }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
@@ -18,13 +19,41 @@ const ColorList = ({ colors, updateColors }) => {
 
   const saveEdit = e => {
     e.preventDefault();
+
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+
+    axiosWithAuth()
+    .put(`colors/${colorToEdit.id}`, colorToEdit)
+    .then((response)=> {
+      console.log("PUT color edit res:", response)
+      setEffectTrigger(!effectTrigger)
+    })
+    .catch((error)=>{
+      console.log("save edit error:", error)
+    })
+    
   };
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    console.log("delete color id:", color.id)
+    console.log("trigger delete color")
+
+    axiosWithAuth()
+    .delete(`/colors/${color.id}`)
+    .then((response) => {console.log("deleted response:", response); setEffectTrigger(!effectTrigger)})
+    .catch((error)=>{ console.log("error in catch: ", error)})
+    // axiosWithAuth()
+    // .delete(`/api/colors/${color.id}`, colorToEdit)
+    // .then((response) => {
+    //   console.log("delete triggered in THEN")
+    //   console.log(response)
+    // })
+    // .catch((error) => {
+    //   console.log("delete error: ", error)
+    // })
   };
 
   return (
